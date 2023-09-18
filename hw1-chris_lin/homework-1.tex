@@ -1,0 +1,180 @@
+% (C) Brett Klamer - MIT - http://opensource.org/licenses/MIT
+% Please contact me if you find any errors or make improvements
+% Contact details at brettklamer.com
+
+\documentclass[11pt,letterpaper,english,oneside]{article} % article class is a standard class
+%==============================================================================
+%Load Packages
+%==============================================================================
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry} % easy page margins
+\usepackage[utf8]{inputenc} % editor uses utf-8 encoding
+\usepackage[T1]{fontenc} % T1 font pdf output
+\usepackage{lmodern} % Latin modern roman font
+\usepackage{bm, bbm} % bold and blackboard bold math symbols
+\usepackage{amsmath, amsfonts, amssymb, amsthm} % math packages
+\usepackage[final]{microtype} % better microtypography
+\usepackage{graphicx} % for easier grahics handling
+\usepackage[hidelinks, colorlinks=true, linkcolor = blue, urlcolor = blue]{hyperref} % to create hyperlinks
+\usepackage{float} % tells floats to stay [H]ere!
+\usepackage{enumitem} % nice lists
+\usepackage{fancyhdr} % nice headers
+\usepackage{caption}  % to control figure and table captions
+\usepackage{booktabs} % to create nice tables
+
+\captionsetup{width=0.9\textwidth, justification = raggedright}
+
+%==============================================================================
+% Enter name and homework title here
+%==============================================================================
+\author{FirstName LastName}
+\title{STAT 9610: Homework 1}
+\date{Due September 19, 2023 at 10:00am}
+
+%==============================================================================
+% Put title and author in PDF properties
+%==============================================================================
+\makeatletter % change interpretation of @
+\hypersetup{pdftitle={\@title},pdfauthor={\@author}}
+
+
+%==============================================================================
+% Header settings
+%==============================================================================
+\pagestyle{fancy} % turns on fancy header styles
+\fancyhf{} % clear all header and footer fields
+\makeatletter
+\lhead{\@author} % left header
+\chead{\@title} % center header
+\makeatother
+\rhead{Page \thepage} % right header
+\setlength{\headheight}{13.6pt} % fixes minor warning
+\makeatother % change back interpretation of @
+
+%==============================================================================
+% List spacing
+%==============================================================================
+\setlist[itemize]{parsep=0em} % fix itemize spacing
+\setlist[enumerate]{parsep=0em} % fix enumerate spacing
+
+%==============================================================================
+% Float spacing (changes spacing of tables, graphs, etc)
+%==============================================================================
+%\setlength{\textfloatsep}{3pt}
+%\setlength{\intextsep}{3pt}
+
+%==============================================================================
+% Define Problem and Solution Environments
+%==============================================================================
+\theoremstyle{definition} % use definition's look
+\newtheorem{problem}{Problem}
+\newtheorem{solution}{Solution}
+\newenvironment{prob}{\clearpage \begin{problem}\hspace{0pt}}{\end{problem}}
+\newenvironment{sol}{\begin{solution}\hspace{0pt}}{\end{solution}}
+
+\begin{document}
+
+\maketitle
+
+\section{Instructions}
+
+\paragraph{Setup.} Clone this repository and open \verb|homework-1.tex| in your LaTeX editor. Use this document as a starting point for your writeup, adding your solutions between \verb|\begin{sol}| and \verb|\end{sol}|. Add R code for problem $i$ in \verb|problem-i.R| (rather than in your LaTeX report), saving your figures and tables to the \verb|figures-and-tables| folder for LaTeX import. 
+
+\paragraph{Resources.}
+
+Consult the \href{https://katsevich-teaching.github.io/stat-9610-fall-2023/assets/getting-started.pdf}{getting started guide} if you need to brush up on R, LaTeX, or Git, the \href{https://katsevich-teaching.github.io/stat-9610-fall-2023/assets/preparing-reports.pdf}{preparing reports guide} for guidelines on presentation quality, the \href{https://github.com/stat-9610-fall-2023/sample-homework-stat-9610}{sample homework} for an example of a completed homework repository, and \href{https://hmc-cs-131-spring2020.github.io/howtos/assignments.html}{this webpage} for more detailed instructions on using GitHub and Gradescope to complete and submit homework.
+
+\paragraph{Programming.}
+
+The \verb|tidyverse| paradigm for data manipulation (\verb|dplyr|) and plotting (\verb|ggplot2|) is required; points will be deducted for using base R. 
+
+\paragraph{Grading.} Each sub-part of each problem will be worth 3 points: 0 points for no solution or completely wrong solution; 1 point for some progress; 2 points for a mostly correct solution; 3 points for a complete and correct solution modulo small flaws. The presentation quality of the solution for each problem (see the \href{https://katsevich-teaching.github.io/stat-9610-fall-2023/assets/preparing-reports.pdf}{preparing reports guide}) will be evaluated out of an additional 3 points.
+
+\paragraph{Submission.} Compile your LaTeX report to PDF and commit your work. Then, push your work to GitHub. Finally, submit your GitHub repository to \href{https://www.gradescope.com/courses/589902}{Gradescope}.
+
+\paragraph{Materials and collaboration.} The policy is as stated on the Syllabus:
+
+\begin{quote}
+``Students may consult all course materials, textbooks, the internet, or AI tools (e.g. ChatGPT or GitHub Copilot) to complete their homework. Students may not use solutions to problems that may be available online and/or from past iterations of the course. For each homework and exam, students must disclose all classmates with whom they collaborated, which AI tools they used, and how they used them. Failure to do so will result in a 5-point penalty. The instructor reserves the right to update this policy during the semester.''
+\end{quote}
+
+\noindent In accordance with this policy, \\
+
+\noindent \textit{Please disclose all classmates with whom you collaborated:} \\
+
+\noindent \textit{Please disclose which AI tools you used, and how you used them:} \\
+
+\noindent \textcolor{red}{Failure to answer the above questions will result in a 5-point penalty.}
+
+\clearpage
+
+\begin{prob} \label{prob:change-of-basis}\textbf{Change of basis.} (Adapted from Agresti Ex. 1.17) \\
+
+\noindent Let $\bm X$ and $\bm X'$ be full-rank $n \times p$ model matrices.
+\begin{enumerate}
+\item[(a)]  Show that $C(\bm X) = C(\bm X')$ if and only if $\bm X' = \bm X \bm A$ for some nonsingular $p \times p$ matrix $\bm A$. In plain language, express what the operation $\bm X \mapsto \bm X \bm A$ does to the columns of $\bm X$ (one sentence is sufficient).
+\item[(b)] Let $\bm{\widehat \beta}$ and $\bm{\widehat \beta'}$ be the least squares solutions obtained from regressing a response vector $\bm y$ on $\bm X$ and $\bm X' \equiv \bm X \bm A$, respectively, where $\bm A$ is a nonsingular $p \times p$ matrix. What is the relationship between $\bm{\widehat \beta}$ and $\bm{\widehat \beta'}$ (express the latter in terms of the former)? Justify your answer. 
+\item[(c)] Consider the linear model
+\begin{equation}
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon; \quad \epsilon \sim (0, \sigma^2),
+\label{eq:two-predictors}
+\end{equation}
+so that $\bm X = [\bm 1, \bm x_{*1}, \bm x_{*2}]$ for columns $\bm x_{*j} \equiv (x_{1j}, \dots, x_{nj})^T$, $j \in \{1,2\}$. Sometimes it is useful to center the predictors by subtracting their means: 
+\begin{equation*}
+\bm x'_{*j} \equiv \bm x_{*j} - \bar x_j \bm 1; \quad \bar x_j \equiv \frac{1}{n}\sum_{i = 1}^n x_{ij}, \quad j \in \{1,2\}.
+\end{equation*}
+Defining $\bm X' \equiv [\bm 1, \bm x'_{*1}, \bm x'_{*2}]$, find the matrix $\bm A$ such that $\bm X' = \bm X \bm A$ ($\bm A$ may itself be expressed in terms of $\bm X$). Express the coefficient estimates from the centered regression ($\widehat \beta'_0$, $\widehat \beta'_1$, $\widehat \beta'_2$) in terms of those from the original regression ($\widehat \beta_0$, $\widehat \beta_1$, $\widehat \beta_2$).
+\item[(d)] Let $w \in \{a,b,c\}$ be a categorical variable with three levels. Define $x_1 \equiv \mathbbm 1(w = b)$ and $x_2 \equiv \mathbbm 1(w = c)$, and consider the linear regression~\eqref{eq:two-predictors}. This corresponds to regressing $y$ on the categorical variable $w$, with baseline category $a$. Sometimes a different baseline category may make more sense, e.g. category $b$. In this case, we would define $x'_1 \equiv \mathbbm 1(w = a)$ and $x'_2 \equiv \mathbbm 1(w = c)$. Defining $\bm X \equiv [\bm 1, \bm x_{*1}, \bm x_{*2}]$ and $\bm X' \equiv [\bm 1, \bm x'_{*1}, \bm x'_{*2}]$, find the matrix $\bm A$ such that $\bm X' = \bm X \bm A$. Express the coefficient estimates from the transformed regression ($\widehat \beta'_0$, $\widehat \beta'_1$, $\widehat \beta'_2$) in terms of those from the original regression ($\widehat \beta_0$, $\widehat \beta_1$, $\widehat \beta_2$). What are the interpretations of the original and transformed coefficients, and why do the relationships between these coefficients derived above make sense in terms of these interpretations? 
+
+\end{enumerate}
+
+\end{prob}
+
+\begin{sol}
+% Solution goes here
+\end{sol}
+
+\begin{prob} \textbf{Predictor correlation.} (Adapted from Agresti Ex. 2.9) \\
+
+\noindent Consider the linear regression
+\begin{equation*}
+y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon; \quad \epsilon \sim (0, \sigma^2),
+\end{equation*}
+with observed predictor vectors denoted $\bm x_{*1} \equiv (x_{11}, \dots, x_{n1})^T$ and $\bm x_{*2} \equiv (x_{12}, \dots, x_{n2})^T$. (This is the same setup as in Problem~\ref{prob:change-of-basis}(c).) 
+\begin{enumerate}
+\item[(a)] Suppose $\bm x_{*1}$ and $\bm x_{*2}$  have sample correlation $\rho \in (-1,1)$. In terms of $\rho$, what is the correlation between the estimates $\widehat \beta_1$ and $\widehat \beta_2$ (which are random variables due to the randomness in $\epsilon$)? Your answer should be as explicit as possible.
+\item[(b)] To build intuition for the preceding result, consider the extreme case when $\bm x_{*1} = \bm x_{*2}$. In this case, $\rho = 1$ and the regression is not identifiable. For a fixed parameter vector $(\beta_0^0, \beta_1^0, \beta_2^0)$, write down the set $\mathcal S$ of parameter vectors $(\beta_0, \beta_1, \beta_2)$ giving the same value of $\mathbb E[\bm y]$ as $(\beta_0, \beta_1, \beta_2) = (\beta_0^0, \beta_1^0, \beta_2^0)$. In what sense does the result in part (a) reflect the relationship between $\beta_1$ and $\beta_2$ for $(\beta_0, \beta_1, \beta_2) \in \mathcal S$? (Ignore the fact that the case $\rho = 1$ is not covered in part (a).)
+\item[(c)] Suppose $z_1, z_2 \overset{\text{i.i.d.}} \sim N(0,1)$, and $x_1 \equiv z_1 + 0.5z_2$ and $x_2 \equiv z_1 - 0.5z_2$. What is the correlation between the random variables $x_1$ and $x_2$? Suppose the predictors in each row $\{(x_{i1}, x_{i2})\}_{i = 1}^n$ are a sample from this joint distribution. Roughly what do we expect to be the sample correlation between $\bm x_{*1}$ and $\bm x_{*2}$? Fixing $\bm x_{*1}$ and $\bm x_{*2}$ at their realizations, roughly what do we expect to be the correlation between $\widehat \beta_1$ and $\widehat \beta_2$?
+\item[(d)] To check the conclusions in part (b), run a numerical simulation with $n = 100$, $\sigma^2 = 1$, $(\beta_0, \beta_1, \beta_2) = (0,1,2)$, and $\epsilon \sim N(0, \sigma^2)$. Sample one realization of $\bm x_{*1}$ and $\bm x_{*2}$ from the distribution specified in part (c), generate 250 realizations of the response $\bm y$, and for each realization calculate least squares estimates $\bm{\widehat \beta}$. Summarize the results of your simulation by creating scatter plots of $\bm x_{*2}$ versus $\bm x_{*1}$ and $\widehat \beta_{2}$ versus $\widehat \beta_{1}$, with the title of each plot containing the sample correlations of the data it displays. On the scatter plot of $\widehat \beta_{2}$ versus $\widehat \beta_{1}$, indicate the theoretical expected value of $(\widehat \beta_{1}, \widehat \beta_2)$ with a red point. Display these two scatter plots side by side using \texttt{plot\_grid} from the \verb|cowplot| package. Do the sample correlations match what you predicted in part (c)?
+\end{enumerate}
+
+\end{prob}
+\begin{sol}
+% Solution goes here
+\end{sol}
+
+
+\begin{prob} \textbf{Data analysis: Anorexia treatment.} (Adapted from Agresti Ex. 1.24) \\
+
+\noindent For 72 young girls suffering from anorexia, the \texttt{Anorexia.dat} file contains their weights before and after an experimental period (Table~\ref{tab:anorexia-data}).
+
+\input{figures-and-tables/anorexia-data.tex}
+
+\noindent The girls were randomly assigned to receive one of three therapies during this period. A control group (c) received the standard therapy, which was compared to family therapy (f) and cognitive behavioral therapy (b). The goal of the study is to compare the effectiveness of the therapies in increasing the girls' weights. 
+
+\begin{enumerate}
+\item[(a)] Prepare the data by (1) removing the \texttt{subj} variable, (2) re-coding the factor levels of \texttt{therapy} as \texttt{behavioral}, \texttt{family}, and \texttt{control}, (3) renaming \texttt{before} and \texttt{after} to \texttt{weight\_before} and \texttt{weight\_after}, respectively, and (4) adding a variable called \texttt{weight\_gain} defined as the difference of \texttt{weight\_after} and \texttt{weight\_before}. Print the resulting tibble.
+\item[(b)] Explore the data by (1) making box plots of \texttt{weight\_gain} as a function of \texttt{therapy}, (2) making a scatter plot of \texttt{weight\_gain} against \texttt{weight\_before}, coloring points based on \texttt{therapy} and (3) creating a table displaying, for each \texttt{therapy} group, the mean weight gain, maximum weight gain, and fraction of girls who gained weight (i.e. \texttt{weight\_gain > 0}). Based on these summaries: What therapy appears overall the most successful and why? How effective does the standard therapy appear to be? What is the greatest weight gain observed in this study? Which girls tended to gain most weight (in the absolute sense), based on their weight before therapy? Why might this be the case? 
+
+\item[(c)] Run a linear regression of \texttt{weight\_gain} on \texttt{therapy} and print the regression summary (print in \texttt{R}, without using \texttt{kable}). Identify the base category chosen by \texttt{R} and discuss the interpretations of the fitted coefficients. It makes more sense to choose \texttt{control} as the base category. Recode the factor levels so that \texttt{control} is the first (and therefore will be chosen as the base category), rerun the linear regression, and print the summary again. Do the relationships among the fitted coefficients in these two regressions match what was found in Problem~\ref{prob:change-of-basis}d? 
+
+\item[(d)] Directly compute the between-groups, within-groups, and corrected total sums of squares (without appealing to the \texttt{aov} function or equivalent) and verify that the first two add up to the third. What is the  ratio of the between-groups sum of squares and the corrected total sum of squares? What is the interpretation of this quantity, and what quantity in the regression summaries printed in part (c) is it equivalent to?
+
+\end{enumerate}
+
+\end{prob}
+
+\begin{sol}
+% Solution goes here
+\end{sol}
+
+\end{document}
